@@ -7,16 +7,18 @@ import { Data, Stream, Talkback } from "Stream"
 export alias TimeSpanner a = a -> {}
 export type TimerId = TimerId
 #iftarget js
-setTimeout :: ({} -> {}) -> Integer -> TimerId
+setTimeout :: TimeSpanner {} -> Integer -> TimerId
 export setTimeout = (cb, ms) => #- setTimeout(cb, ms) -#
-clearTimeout :: TimerId -> {}
+clearTimeout :: TimeSpanner TimerId
 export clearTimeout = (id) => #- clearTimeout(id) -#
 #elseif llvm
-setTimeout :: ({} -> {}) -> Integer -> TimerId
+setTimeout :: TimeSpanner {} -> Integer -> TimerId
 export setTimeout = extern "__setTimeout__"
 clearTimeout :: TimerId -> {}
 export clearTimeout = extern "__clearTimeout__"
 #endif
+wait :: Integer -> TimeSpanner {} -> TimerId
+export wait = (ms, cb) => setTimeout(cb, ms)
 withInterval :: Integer -> TimeSpanner a -> TimeSpanner {}
 export withInterval = (ms, onTick) => {
   stopped = false
@@ -65,10 +67,8 @@ export withIntervalStream = (ms) => Stream(
       sink(
         0,
         Talkback(
-          (t) => {
-            if (t == 2) {
-              stop()
-            }
+          (t) => if (t == 2) {
+            stop()
           },
         ),
       )

@@ -17,5 +17,5 @@ main = () => {
       )(Date.now())
     },
   )
-  Recess.setTimeout(stop, 5000)
+  Recess.wait(5000, stop)
 }
