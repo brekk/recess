@@ -1,0 +1,21 @@
+import Date from "Date"
+import IO from "IO"
+
+import Recess from "@/Recess"
+
+
+
+main = () => {
+  t = 0
+  stop :: Recess.TimeSpanner {}
+  stop = Recess.withInterval(
+    200,
+    () => {
+      t := t + 1
+      pipe(
+        IO.pTrace(" " ++ show(t) ++ ". "),
+      )(Date.now())
+    },
+  )
+  Recess.setTimeout(stop, 5000)
+}

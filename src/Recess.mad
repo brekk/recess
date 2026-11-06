@@ -1,0 +1,77 @@
+import type { Stream } from "Stream"
+
+import { Data, Stream, Talkback } from "Stream"
+
+
+
+export alias TimeSpanner a = a -> {}
+export type TimerId = TimerId
+#iftarget js
+setTimeout :: ({} -> {}) -> Integer -> TimerId
+export setTimeout = (cb, ms) => #- setTimeout(cb, ms) -#
+clearTimeout :: TimerId -> {}
+export clearTimeout = (id) => #- clearTimeout(id) -#
+#elseif llvm
+setTimeout :: ({} -> {}) -> Integer -> TimerId
+export setTimeout = extern "__setTimeout__"
+clearTimeout :: TimerId -> {}
+export clearTimeout = extern "__clearTimeout__"
+#endif
+withInterval :: Integer -> TimeSpanner a -> TimeSpanner {}
+export withInterval = (ms, onTick) => {
+  stopped = false
+  pending = false
+  timer = TimerId
+
+  start :: TimeSpanner {} -> {}
+  start = (t) => {
+    pending := true
+    timer := setTimeout(t, ms)
+  }
+  stop :: TimeSpanner {}
+  stop = () => {
+    stopped := true
+    if (pending) do {
+      pending := false
+      clearTimeout(timer)
+    }
+  }
+
+  tick :: TimeSpanner {}
+  tick = () => {
+    pending := false
+    onTick(stop)
+    if (!stopped) do {
+      start(tick)
+    }
+  }
+
+  start(tick)
+  return stop
+}
+withIntervalStream :: Integer -> Stream e Integer
+export withIntervalStream = (ms) => Stream(
+  (start, sink) => {
+    if (start == 0) do {
+      i = 0
+      stop = withInterval(
+        ms,
+        (_) => {
+          c = i
+          i := i + 1
+          sink(1, Data(c))
+        },
+      )
+      sink(
+        0,
+        Talkback(
+          (t) => {
+            if (t == 2) {
+              stop()
+            }
+          },
+        ),
+      )
+    }
+  },
+)
