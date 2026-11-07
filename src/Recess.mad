@@ -1,11 +1,16 @@
 import type { Stream } from "Stream"
 
 import { Data, Stream, Talkback } from "Stream"
+import Wish from "Wish"
 
 
+
+// recess types
 
 export alias TimeSpanner a = a -> {}
 export type TimerId = TimerId
+// handle target segmentation
+
 #iftarget js
 setTimeout :: TimeSpanner {} -> Integer -> TimerId
 export setTimeout = (cb, ms) => #- setTimeout(cb, ms) -#
@@ -17,10 +22,14 @@ export setTimeout = extern "__setTimeout__"
 clearTimeout :: TimerId -> {}
 export clearTimeout = extern "__clearTimeout__"
 #endif
+// CORE API
+
+// delay first setTimeout
 wait :: Integer -> TimeSpanner {} -> TimerId
 export wait = (ms, cb) => setTimeout(cb, ms)
-withInterval :: Integer -> TimeSpanner a -> TimeSpanner {}
-export withInterval = (ms, onTick) => {
+// delay first setInterval
+withIntervalOnComplete :: ({} -> b) -> Integer -> TimeSpanner a -> TimeSpanner {}
+export withIntervalOnComplete = (cease, ms, onTick) => {
   stopped = false
   pending = false
   timer = TimerId
@@ -30,13 +39,15 @@ export withInterval = (ms, onTick) => {
     pending := true
     timer := setTimeout(t, ms)
   }
-  stop :: TimeSpanner {}
+
+  stop :: {} -> a
   stop = () => {
     stopped := true
     if (pending) do {
       pending := false
       clearTimeout(timer)
     }
+    return cease()
   }
 
   tick :: TimeSpanner {}
@@ -51,6 +62,42 @@ export withInterval = (ms, onTick) => {
   start(tick)
   return stop
 }
+export withInterval = withIntervalOnComplete(() => {})
+// withIntervalWish :: ({} -> Wish e b) -> Integer -> Wish e a -> Wish e b
+export withIntervalWish = (cease, ms, onTick) => {
+  stopped = false
+  pending = false
+  timer = TimerId
+
+  start :: TimeSpanner {} -> {}
+  start = (t) => {
+    pending := true
+    timer := setTimeout(t, ms)
+  }
+
+  stop :: {} -> a
+  stop = () => {
+    stopped := true
+    if (pending) do {
+      pending := false
+      clearTimeout(timer)
+    }
+    return cease()
+  }
+
+  tick :: TimeSpanner {}
+  tick = () => {
+    pending := false
+    onTick(stop)
+    if (!stopped) do {
+      start(tick)
+    }
+  }
+
+  start(tick)
+  return stop
+}
+// delay first Stream-wrapped setInterval
 withIntervalStream :: Integer -> Stream e Integer
 export withIntervalStream = (ms) => Stream(
   (start, sink) => {
