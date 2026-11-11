@@ -64,7 +64,9 @@ export withIntervalOnComplete = (cease, ms, onTick) => {
   return stop
 }
 export withInterval = withIntervalOnComplete(() => {})
-withIntervalAsync :: Integer -> ({} -> {}) -> (a -> b) -> a -> (({} -> a) -> a -> a) -> Wish {} b
+alias RecessLoopConfig = { cancel :: {} -> {}, cease :: a -> b, init :: {} -> a }
+alias TickReduce a = ({} -> a) -> a -> a
+// withIntervalAsync :: Integer -> ({} -> {}) -> (a -> b) -> a -> TickReduce a -> Wish {} b
 export withIntervalAsync = (ms, cancel, cease, init, onTickReduce) => Wish.Wish(
   (_, good) => {
     stopped = false

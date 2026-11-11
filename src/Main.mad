@@ -20,6 +20,16 @@ regularMain = () => {
   )
   Recess.wait(5000, stop)
 }
+alias Agg = { i :: Integer, info :: String }
+moremore :: ({} -> {}) -> Agg -> Agg
+moremore = (stop, agg) => {
+  j = agg.i + 1
+  IO.pTrace(" " ++ show(agg.i) ++ ". ", Date.now())
+  if (j > 10) do {
+    stop()
+  }
+  return { ...agg, i: j }
+}
 main = () => {
   pipe(
     Recess.withIntervalAsync(
@@ -30,14 +40,7 @@ main = () => {
         (x) => #["yeah!", x],
       ),
       $,
-      (stop, agg) => {
-        j = agg.i + 1
-        IO.pTrace(" " ++ show(agg.i) ++ ". ", Date.now())
-        if (j > 10) do {
-          stop()
-        }
-        return { ...agg, i: j }
-      },
+      moremore,
     ),
     Wish.fulfill(
       pipe(
