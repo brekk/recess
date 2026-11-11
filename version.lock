@@ -1,0 +1,46 @@
+{
+  "buildHash": "97daa2760cc1abe14778d53b3f92c61c",
+  "jsApi": {
+    "apiInstances": [],
+    "apiAliases": {
+      "src/Recess.mad#TimeSpanner a": "(a -> {})"
+    },
+    "apiInterfaces": {},
+    "apiNames": {
+      "src/Recess.mad#withIntervalAsyncSource": "Integer -> ({} -> {}) -> (a -> b) -> a -> (({} -> {}) -> a -> a) -> Wish c b",
+      "src/Recess.mad#clearTimeout": "TimerId -> {}",
+      "src/Recess.mad#wait": "Integer -> ({} -> {}) -> TimerId",
+      "src/Recess.mad#withIntervalAsync": "Integer -> ({} -> {}) -> (a -> b) -> (({} -> {}) -> a -> a) -> Wish c a -> Wish c b",
+      "src/Recess.mad#withIntervalOnComplete": "({} -> {}) -> Integer -> (({} -> {}) -> {}) -> {} -> {}",
+      "src/Recess.mad#setTimeout": "({} -> {}) -> Integer -> TimerId",
+      "src/Recess.mad#withInterval": "Integer -> (({} -> {}) -> {}) -> {} -> {}"
+    },
+    "apiTypes": {
+      "src/Recess.mad#TimerId": [
+        "TimerId"
+      ]
+    }
+  },
+  "llvmApi": {
+    "apiInstances": [],
+    "apiAliases": {
+      "src/Recess.mad#TimeSpanner a": "(a -> {})"
+    },
+    "apiInterfaces": {},
+    "apiNames": {
+      "src/Recess.mad#withIntervalAsyncSource": "Integer -> ({} -> {}) -> (a -> b) -> a -> (({} -> {}) -> a -> a) -> Wish c b",
+      "src/Recess.mad#clearTimeout": "TimerId -> {}",
+      "src/Recess.mad#wait": "Integer -> ({} -> {}) -> TimerId",
+      "src/Recess.mad#withIntervalAsync": "Integer -> ({} -> {}) -> (a -> b) -> (({} -> {}) -> a -> a) -> Wish c a -> Wish c b",
+      "src/Recess.mad#withIntervalOnComplete": "({} -> {}) -> Integer -> (({} -> {}) -> {}) -> {} -> {}",
+      "src/Recess.mad#setTimeout": "({} -> {}) -> Integer -> TimerId",
+      "src/Recess.mad#withInterval": "Integer -> (({} -> {}) -> {}) -> {} -> {}"
+    },
+    "apiTypes": {
+      "src/Recess.mad#TimerId": [
+        "TimerId"
+      ]
+    }
+  },
+  "versionHash": "25e64aa754c310d45c1e084d574c1bb0"
+}
