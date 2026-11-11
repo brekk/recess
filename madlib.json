@@ -4,5 +4,22 @@
   "main": "src/Main.mad",
   "importAliases": {
     ".": "src"
-  }
+  },
+  "dependencies": [
+    {
+      "minVersion": "0.1.0",
+      "url": "https://github.com/brekk/study/archive/refs/tags/v0.1.0.zip",
+      "description": "Study"
+    },
+    {
+      "minVersion": "0.4.1",
+      "url": "https://github.com/brekk/party-bus/archive/refs/tags/v0.4.1.zip",
+      "description": "PartyBus"
+    },
+    {
+      "minVersion": "2.0.0",
+      "url": "https://github.com/brekk/whim/archive/refs/tags/v2.0.0.zip",
+      "description": "whim"
+    }
+  ]
 }

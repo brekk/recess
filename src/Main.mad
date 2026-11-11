@@ -1,11 +1,12 @@
 import Date from "Date"
 import IO from "IO"
+import Wish from "Wish"
 
 import Recess from "@/Recess"
 
 
 
-main = () => {
+regularMain = () => {
   t = 0
   stop :: Recess.TimeSpanner {}
   stop = Recess.withInterval(
@@ -18,4 +19,35 @@ main = () => {
     },
   )
   Recess.wait(5000, stop)
+}
+main = () => {
+  pipe(
+    Recess.withIntervalAsync(
+      200,
+      () => {},
+      pipe(
+        IO.pTrace("WHAT?"),
+        (x) => #["yeah!", x],
+      ),
+      $,
+      (stop, agg) => {
+        j = agg.i + 1
+        IO.pTrace(" " ++ show(agg.i) ++ ". ", Date.now())
+        if (j > 10) do {
+          stop()
+        }
+        return { ...agg, i: j }
+      },
+    ),
+    Wish.fulfill(
+      pipe(
+        show,
+        IO.putLine,
+      ),
+      pipe(
+        show,
+        IO.putLine,
+      ),
+    ),
+  )({ i: 0, info: "started" })
 }

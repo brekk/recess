@@ -24,6 +24,7 @@ export clearTimeout = extern "__clearTimeout__"
 #endif
 // CORE API
 
+waitFor = (ms, cb) => setTimeout(cb, ms)
 // delay first setTimeout
 wait :: Integer -> TimeSpanner {} -> TimerId
 export wait = (ms, cb) => setTimeout(cb, ms)
@@ -63,40 +64,43 @@ export withIntervalOnComplete = (cease, ms, onTick) => {
   return stop
 }
 export withInterval = withIntervalOnComplete(() => {})
-// withIntervalWish :: ({} -> Wish e b) -> Integer -> Wish e a -> Wish e b
-export withIntervalWish = (cease, ms, onTick) => {
-  stopped = false
-  pending = false
-  timer = TimerId
+withIntervalAsync :: Integer -> ({} -> {}) -> (a -> b) -> a -> (({} -> a) -> a -> a) -> Wish {} b
+export withIntervalAsync = (ms, cancel, cease, init, onTickReduce) => Wish.Wish(
+  (_, good) => {
+    stopped = false
+    pending = false
+    agg = init
+    timer = TimerId
 
-  start :: TimeSpanner {} -> {}
-  start = (t) => {
-    pending := true
-    timer := setTimeout(t, ms)
-  }
+    start :: TimeSpanner {} -> {}
+    start = (fn) => {
+      pending := true
+      timer := setTimeout(fn, ms)
+    }
 
-  stop :: {} -> a
-  stop = () => {
-    stopped := true
-    if (pending) do {
+    stop :: {} -> a
+    stop = () => {
+      stopped := true
+      if (pending) do {
+        pending := false
+        clearTimeout(timer)
+      }
+      return good(cease(agg))
+    }
+
+    tick :: TimeSpanner {}
+    tick = () => {
       pending := false
-      clearTimeout(timer)
+      agg := onTickReduce(stop, agg)
+      if (!stopped) do {
+        start(tick)
+      }
     }
-    return cease()
-  }
 
-  tick :: TimeSpanner {}
-  tick = () => {
-    pending := false
-    onTick(stop)
-    if (!stopped) do {
-      start(tick)
-    }
-  }
-
-  start(tick)
-  return stop
-}
+    start(tick)
+    return cancel
+  },
+)
 // delay first Stream-wrapped setInterval
 withIntervalStream :: Integer -> Stream e Integer
 export withIntervalStream = (ms) => Stream(
