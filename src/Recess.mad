@@ -64,10 +64,7 @@ export withIntervalOnComplete = (cease, ms, onTick) => {
   return stop
 }
 export withInterval = withIntervalOnComplete(() => {})
-alias RecessLoopConfig = { cancel :: {} -> {}, cease :: a -> b, init :: {} -> a }
-alias TickReduce a = ({} -> a) -> a -> a
-// withIntervalAsync :: Integer -> ({} -> {}) -> (a -> b) -> a -> TickReduce a -> Wish {} b
-export withIntervalAsync = (ms, cancel, cease, init, onTickReduce) => Wish.Wish(
+export withIntervalAsyncSource = (ms, cancel, cease, init, onTickReduce) => Wish.Wish(
   (_, good) => {
     stopped = false
     pending = false
@@ -87,7 +84,6 @@ export withIntervalAsync = (ms, cancel, cease, init, onTickReduce) => Wish.Wish(
         pending := false
         clearTimeout(timer)
       }
-      return good(cease(agg))
     }
 
     tick :: TimeSpanner {}
@@ -96,6 +92,8 @@ export withIntervalAsync = (ms, cancel, cease, init, onTickReduce) => Wish.Wish(
       agg := onTickReduce(stop, agg)
       if (!stopped) do {
         start(tick)
+      } else {
+        good(cease(agg))
       }
     }
 
@@ -103,28 +101,43 @@ export withIntervalAsync = (ms, cancel, cease, init, onTickReduce) => Wish.Wish(
     return cancel
   },
 )
-// delay first Stream-wrapped setInterval
-withIntervalStream :: Integer -> Stream e Integer
-export withIntervalStream = (ms) => Stream(
-  (start, sink) => {
-    if (start == 0) do {
-      i = 0
-      stop = withInterval(
-        ms,
-        (_) => {
-          c = i
-          i := i + 1
-          sink(1, Data(c))
-        },
-      )
-      sink(
-        0,
-        Talkback(
-          (t) => if (t == 2) {
-            stop()
-          },
-        ),
-      )
-    }
-  },
+export withIntervalAsync = (ms, cancel, cease, onTickReduce, w) => chain(
+  (init) => Wish.Wish(
+    (_, good) => {
+      stopped = false
+      pending = false
+      agg = init
+      timer = TimerId
+
+      start :: TimeSpanner {} -> {}
+      start = (fn) => {
+        pending := true
+        timer := setTimeout(fn, ms)
+      }
+
+      stop :: {} -> a
+      stop = () => {
+        stopped := true
+        if (pending) do {
+          pending := false
+          clearTimeout(timer)
+        }
+      }
+
+      tick :: TimeSpanner {}
+      tick = () => {
+        pending := false
+        agg := onTickReduce(stop, agg)
+        if (!stopped) do {
+          start(tick)
+        } else {
+          good(cease(agg))
+        }
+      }
+
+      start(tick)
+      return cancel
+    },
+  ),
+  w,
 )

@@ -1,0 +1,36 @@
+import Date from "Date"
+import IO from "IO"
+import Test from "Test"
+import Wish from "Wish"
+
+import Study from "study"
+import StudyWhim from "study/Whim"
+
+import Recess from "@/Recess"
+
+
+
+moremore = (stop, { stack, i }) => {
+  j = i + 1
+  IO.pTrace(" " ++ show(i) ++ ". ", Date.now())
+  updated = { stack: [...stack, i], i: j }
+  if (j >= 11) do {
+    stop()
+  }
+  return updated
+}
+Study.reportAsync(
+  Recess.withIntervalAsync(
+    10,
+    () => ({}),
+    (a) => pipe(
+      IO.pTrace("huh"),
+      .stack,
+      map((x) => x * 2),
+      IO.pTrace("buut where does this go?"),
+    )(a),
+    moremore,
+  ),
+  "withIntervalAsyncSource",
+  [#[Wish.good({ stack: [], i: 0 }), [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]]],
+)

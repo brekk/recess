@@ -32,7 +32,7 @@ moremore = (stop, agg) => {
 }
 main = () => {
   pipe(
-    Recess.withIntervalAsync(
+    Recess.withIntervalAsyncSource(
       200,
       () => {},
       pipe(
