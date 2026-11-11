@@ -102,42 +102,6 @@ export withIntervalAsyncSource = (ms, cancel, cease, init, onTickReduce) => Wish
   },
 )
 export withIntervalAsync = (ms, cancel, cease, onTickReduce, w) => chain(
-  (init) => Wish.Wish(
-    (_, good) => {
-      stopped = false
-      pending = false
-      agg = init
-      timer = TimerId
-
-      start :: TimeSpanner {} -> {}
-      start = (fn) => {
-        pending := true
-        timer := setTimeout(fn, ms)
-      }
-
-      stop :: {} -> a
-      stop = () => {
-        stopped := true
-        if (pending) do {
-          pending := false
-          clearTimeout(timer)
-        }
-      }
-
-      tick :: TimeSpanner {}
-      tick = () => {
-        pending := false
-        agg := onTickReduce(stop, agg)
-        if (!stopped) do {
-          start(tick)
-        } else {
-          good(cease(agg))
-        }
-      }
-
-      start(tick)
-      return cancel
-    },
-  ),
+  (init) => withIntervalAsyncSource(ms, cancel, cease, init, onTickReduce),
   w,
 )

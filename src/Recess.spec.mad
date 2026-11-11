@@ -12,7 +12,7 @@ import Recess from "@/Recess"
 
 moremore = (stop, { stack, i }) => {
   j = i + 1
-  IO.pTrace(" " ++ show(i) ++ ". ", Date.now())
+  // IO.pTrace(" " ++ show(i) ++ ". ", Date.now())
   updated = { stack: [...stack, i], i: j }
   if (j >= 11) do {
     stop()
@@ -24,13 +24,37 @@ Study.reportAsync(
     10,
     () => ({}),
     (a) => pipe(
-      IO.pTrace("huh"),
       .stack,
       map((x) => x * 2),
-      IO.pTrace("buut where does this go?"),
     )(a),
     moremore,
   ),
-  "withIntervalAsyncSource",
+  "withIntervalAsync",
   [#[Wish.good({ stack: [], i: 0 }), [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]]],
 )
+
+/*
+Test.test(
+  "withInterval",
+  () => do {
+    t = 0
+    stop :: Recess.TimeSpanner {}
+    stop = Recess.withInterval(
+      200,
+      () => {
+        t := t + 1
+        pipe(
+          IO.pTrace(" " ++ show(t) ++ ". "),
+        )(Date.now())
+      },
+    )
+    return pipe(
+      chain(Wish.after(5000)),
+      (_) => {
+        stop()
+        return Test.assertEquals(t, 10)
+      },
+    )(Wish.good(""))
+  },
+)
+*/
