@@ -24,12 +24,11 @@ export clearTimeout = extern "__clearTimeout__"
 #endif
 // CORE API
 
-waitFor = (ms, cb) => setTimeout(cb, ms)
 // delay first setTimeout
 wait :: Integer -> TimeSpanner {} -> TimerId
 export wait = (ms, cb) => setTimeout(cb, ms)
 // delay first setInterval
-withIntervalOnComplete :: ({} -> b) -> Integer -> TimeSpanner a -> TimeSpanner {}
+withIntervalOnComplete :: ({} -> {}) -> Integer -> TimeSpanner a -> TimeSpanner {}
 export withIntervalOnComplete = (cease, ms, onTick) => {
   stopped = false
   pending = false
@@ -64,7 +63,7 @@ export withIntervalOnComplete = (cease, ms, onTick) => {
   return stop
 }
 export withInterval = withIntervalOnComplete(() => {})
-export withIntervalAsyncSource = (ms, cancel, cease, init, onTickReduce) => Wish.Wish(
+export wishIntervalSource = (init, ms, cancel, cease, onTickReduce) => Wish.Wish(
   (_, good) => {
     stopped = false
     pending = false
@@ -101,7 +100,7 @@ export withIntervalAsyncSource = (ms, cancel, cease, init, onTickReduce) => Wish
     return cancel
   },
 )
-export withIntervalAsync = (ms, cancel, cease, onTickReduce, w) => chain(
-  (init) => withIntervalAsyncSource(ms, cancel, cease, init, onTickReduce),
+export wishInterval = (ms, cancel, cease, onTickReduce, w) => chain(
+  wishIntervalSource($, ms, cancel, cease, onTickReduce),
   w,
 )

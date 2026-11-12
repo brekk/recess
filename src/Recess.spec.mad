@@ -20,7 +20,7 @@ moremore = (stop, { stack, i }) => {
   return updated
 }
 Study.reportAsync(
-  Recess.withIntervalAsync(
+  Recess.wishInterval(
     10,
     () => ({}),
     (a) => pipe(

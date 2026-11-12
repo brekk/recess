@@ -20,27 +20,38 @@ regularMain = () => {
   )
   Recess.wait(5000, stop)
 }
-alias Agg = { i :: Integer, info :: String }
-moremore :: ({} -> {}) -> Agg -> Agg
-moremore = (stop, agg) => {
+alias Agg = { i :: Integer, lastUpdated :: Date.DateTime }
+again :: ({} -> {}) -> Agg -> Agg
+again = (stop, agg) => {
   j = agg.i + 1
-  IO.pTrace(" " ++ show(agg.i) ++ ". ", Date.now())
-  if (j > 10) do {
+  lastUpdated = Date.now()
+  IO.pTrace(" " ++ show(agg.i) ++ ". ", lastUpdated)
+  updated = { ...agg, i: j, lastUpdated }
+  return if (j > 10) do {
     stop()
+    return agg
+  } else {
+    updated
   }
-  return { ...agg, i: j }
 }
 main = () => {
   pipe(
-    Recess.withIntervalAsyncSource(
+    Recess.wishIntervalSource(
+      $,
       200,
       () => {},
       pipe(
         IO.pTrace("WHAT?"),
-        (x) => #["yeah!", x],
+        .lastUpdated,
+        Date.toDateInfo,
+        ({ month, day, hours, minutes, year }) => "TODAY IS: "
+            ++ show(day)
+            ++ "/"
+            ++ show(month)
+            ++ "/"
+            ++ show(year),
       ),
-      $,
-      moremore,
+      again,
     ),
     Wish.fulfill(
       pipe(
@@ -52,5 +63,5 @@ main = () => {
         IO.putLine,
       ),
     ),
-  )({ i: 0, info: "started" })
+  )({ i: 0, lastUpdated: Date.now() })
 }
