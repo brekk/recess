@@ -1,5 +1,5 @@
 {
-  "buildHash": "97daa2760cc1abe14778d53b3f92c61c",
+  "buildHash": "282277deb967a87dd6c0c8090572c055",
   "jsApi": {
     "apiInstances": [],
     "apiAliases": {
@@ -7,13 +7,13 @@
     },
     "apiInterfaces": {},
     "apiNames": {
-      "src/Recess.mad#withIntervalAsyncSource": "Integer -> ({} -> {}) -> (a -> b) -> a -> (({} -> {}) -> a -> a) -> Wish c b",
+      "src/Recess.mad#wishInterval": "Integer -> ({} -> {}) -> (a -> b) -> (({} -> {}) -> a -> a) -> Wish c a -> Wish c b",
       "src/Recess.mad#clearTimeout": "TimerId -> {}",
       "src/Recess.mad#wait": "Integer -> ({} -> {}) -> TimerId",
-      "src/Recess.mad#withIntervalAsync": "Integer -> ({} -> {}) -> (a -> b) -> (({} -> {}) -> a -> a) -> Wish c a -> Wish c b",
       "src/Recess.mad#withIntervalOnComplete": "({} -> {}) -> Integer -> (({} -> {}) -> {}) -> {} -> {}",
       "src/Recess.mad#setTimeout": "({} -> {}) -> Integer -> TimerId",
-      "src/Recess.mad#withInterval": "Integer -> (({} -> {}) -> {}) -> {} -> {}"
+      "src/Recess.mad#withInterval": "Integer -> (({} -> {}) -> {}) -> {} -> {}",
+      "src/Recess.mad#wishIntervalSource": "a -> Integer -> ({} -> {}) -> (a -> b) -> (({} -> {}) -> a -> a) -> Wish c b"
     },
     "apiTypes": {
       "src/Recess.mad#TimerId": [
@@ -28,13 +28,13 @@
     },
     "apiInterfaces": {},
     "apiNames": {
-      "src/Recess.mad#withIntervalAsyncSource": "Integer -> ({} -> {}) -> (a -> b) -> a -> (({} -> {}) -> a -> a) -> Wish c b",
+      "src/Recess.mad#wishInterval": "Integer -> ({} -> {}) -> (a -> b) -> (({} -> {}) -> a -> a) -> Wish c a -> Wish c b",
       "src/Recess.mad#clearTimeout": "TimerId -> {}",
       "src/Recess.mad#wait": "Integer -> ({} -> {}) -> TimerId",
-      "src/Recess.mad#withIntervalAsync": "Integer -> ({} -> {}) -> (a -> b) -> (({} -> {}) -> a -> a) -> Wish c a -> Wish c b",
       "src/Recess.mad#withIntervalOnComplete": "({} -> {}) -> Integer -> (({} -> {}) -> {}) -> {} -> {}",
       "src/Recess.mad#setTimeout": "({} -> {}) -> Integer -> TimerId",
-      "src/Recess.mad#withInterval": "Integer -> (({} -> {}) -> {}) -> {} -> {}"
+      "src/Recess.mad#withInterval": "Integer -> (({} -> {}) -> {}) -> {} -> {}",
+      "src/Recess.mad#wishIntervalSource": "a -> Integer -> ({} -> {}) -> (a -> b) -> (({} -> {}) -> a -> a) -> Wish c b"
     },
     "apiTypes": {
       "src/Recess.mad#TimerId": [
@@ -42,5 +42,5 @@
       ]
     }
   },
-  "versionHash": "25e64aa754c310d45c1e084d574c1bb0"
+  "versionHash": "47cd76e43f74bbc2e1baaf194d07e1fa"
 }
