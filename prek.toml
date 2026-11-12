@@ -21,7 +21,7 @@ hooks = [
     name="madlib readme",
     entry="pilcrow -i README.md --repo brekk/recess --auto",
     language="system",
-    files = "README\\.raw\\.md$|madlib\\.json$",
+    files = "README\\.md$|madlib\\.json$",
     verbose=true
   },
   {
